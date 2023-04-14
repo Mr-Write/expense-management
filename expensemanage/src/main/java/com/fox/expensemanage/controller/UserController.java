@@ -1,8 +1,13 @@
 package com.fox.expensemanage.controller;
 
 
+import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.service.UserService;
 import com.fox.expensemanage.service.impl.UserServiceImpl;
+import com.fox.expensemanage.vo.UserRegisterVO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +27,16 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource
     private UserService userService;
+
+
+    /**
+     * 用户注册
+     *
+     * @param userRegisterVO 手机号 + 验证码 + 密码
+     * @return 注册状况
+     */
+    @PostMapping("/register")
+    public Result register(@Validated @RequestBody UserRegisterVO userRegisterVO){
+        return userService.register(userRegisterVO.getPhone(),userRegisterVO.getCode(),userRegisterVO.getPassword());
+    }
 }

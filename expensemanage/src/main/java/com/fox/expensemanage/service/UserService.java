@@ -21,4 +21,14 @@ public interface UserService extends IService<User> {
      * @return 发送情况
      */
     Result sendUserRegisterCode(String phone);
+
+    /**
+     * 用户注册
+     *
+     * @param phone 手机号
+     * @param code 验证码
+     * @param password 密码
+     * @return 注销状况
+     */
+    Result register(String phone, String code, String password);
 }
