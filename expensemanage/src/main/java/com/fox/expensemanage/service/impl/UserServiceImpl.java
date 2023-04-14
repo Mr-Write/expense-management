@@ -3,6 +3,7 @@ package com.fox.expensemanage.service.impl;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fox.expensemanage.constant.BasicConstants;
 import com.fox.expensemanage.constant.HttpStatus;
@@ -260,6 +261,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
 
         // 6.返回ok
+        return Result.ok();
+    }
+
+    @Override
+    public Result modifyPwd(String password, String code) {
+        // 1.校验验证码是否正确
+        String realCode = redisCacheUtils.getCacheObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
+        // 1.1 不存在则返回
+        if (realCode == null) {
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码已失效，请重新获取");
+        }
+        // 1.2 存在但不一致则清除并返回（忽略大小写）
+        if (!realCode.equalsIgnoreCase(code)) {
+            redisCacheUtils.deleteObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码错误，已重新更新");
+        }
+
+        // 2.验证码正确，则从缓存中移除
+        redisCacheUtils.deleteObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
+        // 3.修改密码
+        LambdaUpdateWrapper<User> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(User::getId, UserHolderUtils.getUserId())
+                .set(User::getPassword, PasswordEncoderUtils.encode(password));
+        this.update(wrapper);
+        // 4.返回
         return Result.ok();
     }
 

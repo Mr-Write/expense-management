@@ -56,4 +56,13 @@ public interface UserService extends IService<User> {
      * @return 修改状况
      */
     Result modifyUserInfo(String nickName, String icon);
+
+    /**
+     * 修改密码
+     *
+     * @param password 新密码
+     * @param code     验证码
+     * @return 修改状况
+     */
+    Result modifyPwd(String password, String code);
 }

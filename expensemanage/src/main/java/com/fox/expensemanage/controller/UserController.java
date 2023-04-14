@@ -1,11 +1,13 @@
 package com.fox.expensemanage.controller;
 
 
+import cn.hutool.json.JSONObject;
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.service.UserService;
 import com.fox.expensemanage.vo.UserInfoUpdateVO;
 import com.fox.expensemanage.vo.UserLoginVO;
 import com.fox.expensemanage.vo.UserRegisterVO;
+import com.fox.expensemanage.vo.UserUpdatePwdVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +56,7 @@ public class UserController {
      * @return 信息
      */
     @GetMapping("/getSelfSimpleInfo")
-    public Result getSelfSimpleInfo(){
+    public Result getSelfSimpleInfo() {
         return userService.getSelfSimpleInfo();
     }
 
@@ -65,7 +67,18 @@ public class UserController {
      * @return 修改状况
      */
     @PutMapping("/modifyUserInfo")
-    public Result modifyUserInfo(@Validated @RequestBody UserInfoUpdateVO userInfoUpdateVO){
-        return userService.modifyUserInfo(userInfoUpdateVO.getNickName(),userInfoUpdateVO.getIcon());
+    public Result modifyUserInfo(@Validated @RequestBody UserInfoUpdateVO userInfoUpdateVO) {
+        return userService.modifyUserInfo(userInfoUpdateVO.getNickName(), userInfoUpdateVO.getIcon());
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param userUpdatePwdVO 新密码 + 验证码
+     * @return 修改状况
+     */
+    @PutMapping("/modifyPwd")
+    public Result modifyPwd(@RequestBody UserUpdatePwdVO userUpdatePwdVO) {
+        return userService.modifyPwd(userUpdatePwdVO.getPassword(), userUpdatePwdVO.getCode());
     }
 }
