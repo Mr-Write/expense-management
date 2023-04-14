@@ -1,12 +1,15 @@
 package com.fox.expensemanage.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.system.UserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fox.expensemanage.constant.BasicConstants;
 import com.fox.expensemanage.constant.HttpStatus;
 import com.fox.expensemanage.constant.RedisConstants;
 import com.fox.expensemanage.dao.UserMapper;
+import com.fox.expensemanage.entity.RedisUser;
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.po.User;
 import com.fox.expensemanage.service.UserService;
@@ -151,5 +154,106 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
 
+    }
+
+    @Override
+    public Result login(String phone, String password) {
+        String lockKey = RedisConstants.LOCK_LOGIN_USER_KEY + phone;
+        String phoneKey = RedisConstants.LOGIN_USER_PWD_KEY + phone;
+        boolean lock = false;
+        try {
+            // 1.拿到锁，设置TTL
+            lock = redisLockUtils.tryLock(lockKey, RedisConstants.LOCK_LOGIN_USER_CODE_TTL);
+            // 2.获取锁失败，直接退出
+            if (!lock) {
+                return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), HttpStatus.HTTP_TRY_AGAIN_LATER.getValue());
+            }
+            // 3.从 redis 中获取当前手机号的登录次数
+            Integer count = redisCacheUtils.getCacheObject(phoneKey);
+            if (count == null) {
+                count = 0;
+            }
+            // 4.次数超过8次，则返回稍后再试
+            if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
+                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL / 60 + "分钟");
+            }
+            count++;
+            // 5.从数据库中查询该手机号的用户信息
+            User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getPhone,phone));
+            // 6.用户信息不存在则返回错误
+            if (user == null) {
+                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
+            }
+
+            // 7.校验密码
+            Boolean matches = PasswordEncoderUtils.matches(user.getPassword(), password);
+            if (!matches) {
+                // 8.校验失败的处理
+                // 8.1 是否冻结手机号
+                if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
+                    // 冻结手机+密码方式登录15分钟
+                    redisCacheUtils.setCacheObject(phoneKey, count, RedisConstants.LOGIN_USER_PWD_LOCK_TTL);
+                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL / 60 + "分钟");
+                }
+                // 8.2 未冻结，则修改将手机号验证次数
+                if (count == 1) {
+                    redisCacheUtils.setCacheObject(phoneKey, count, RedisConstants.LOGIN_USER_PWD_TTL);
+                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
+                }
+                Long expire = redisCacheUtils.getExpire(phoneKey);
+                if (expire > 0) {
+                    redisCacheUtils.setCacheObject(phoneKey, count, expire);
+                }
+                // 8.3 返回结果，当剩1-3次机会时返回剩余次数
+                int surplusCount = BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT - count;
+                if (surplusCount > 0 && surplusCount <= BasicConstants.LOGIN_PWD_MAX_SURPLUS_COUNT) {
+                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误，" + surplusCount + "次机会后冻结手机号15分钟");
+                } else {
+                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
+                }
+            }
+            // 校验成功则继续往后走
+
+            // 9.移除缓存中的次数统计
+            redisCacheUtils.deleteObject(phoneKey);
+
+            // 10.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
+            return Result.ok(saveRedisInfo(user));
+        } finally {
+            // 13.最后释放锁
+            if (lock) {
+                redisLockUtils.unlock(lockKey);
+            }
+        }
+
+    }
+
+    /**
+     * 设置用户信息，缓存到 redis 中
+     *
+     * @param user 用户基本信息
+     * @return 生成的token
+     */
+    public String saveRedisInfo(User user) {
+        // todo 1.查询权限信息（后面再来补充）
+
+        // 2.生成 token
+        String uuid = UUID.randomUUID().toString(true);
+        String token = CipherUtils.encrypt(user.getId() + "-" + uuid);
+
+        // 3.设置缓存的用户信息
+        RedisUser redisUser = new RedisUser();
+        redisUser.setUuid(uuid);
+        redisUser.setTime(System.currentTimeMillis());
+        redisUser.setIcon(user.getIcon());
+        redisUser.setName(user.getNickName());
+        redisUser.setId(user.getId());
+        // todo 设置权限
+
+        // 4.信息存储到 redis
+        redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
+
+        // 5.返回token
+        return token;
     }
 }

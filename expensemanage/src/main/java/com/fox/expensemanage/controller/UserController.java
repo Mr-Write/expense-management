@@ -4,6 +4,7 @@ package com.fox.expensemanage.controller;
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.service.UserService;
 import com.fox.expensemanage.service.impl.UserServiceImpl;
+import com.fox.expensemanage.vo.UserLoginVO;
 import com.fox.expensemanage.vo.UserRegisterVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +37,18 @@ public class UserController {
      * @return 注册状况
      */
     @PostMapping("/register")
-    public Result register(@Validated @RequestBody UserRegisterVO userRegisterVO){
-        return userService.register(userRegisterVO.getPhone(),userRegisterVO.getCode(),userRegisterVO.getPassword());
+    public Result register(@Validated @RequestBody UserRegisterVO userRegisterVO) {
+        return userService.register(userRegisterVO.getPhone(), userRegisterVO.getCode(), userRegisterVO.getPassword());
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param userLoginVO 手机号 + 密码
+     * @return 登录状况
+     */
+    @PostMapping("/login")
+    public Result login(@Validated @RequestBody UserLoginVO userLoginVO) {
+        return userService.login(userLoginVO.getPhone(), userLoginVO.getPassword());
     }
 }
