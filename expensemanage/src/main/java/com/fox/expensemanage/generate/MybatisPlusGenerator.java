@@ -11,7 +11,7 @@ import java.util.Collections;
  */
 public class MybatisPlusGenerator {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://8.130.97.145:3306/expense_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8", "root", "123456")
+        FastAutoGenerator.create("jdbc:mysql://8.130.97.145:3306/expense_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8", "root", "root")
                 .globalConfig(builder -> {
                     builder.author("狐狸半面添") // 设置作者
                             //.enableSwagger() // 开启 swagger 模式
