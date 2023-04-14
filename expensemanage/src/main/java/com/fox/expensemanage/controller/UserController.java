@@ -3,15 +3,10 @@ package com.fox.expensemanage.controller;
 
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.service.UserService;
-import com.fox.expensemanage.service.impl.UserServiceImpl;
 import com.fox.expensemanage.vo.UserLoginVO;
 import com.fox.expensemanage.vo.UserRegisterVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -50,5 +45,15 @@ public class UserController {
     @PostMapping("/login")
     public Result login(@Validated @RequestBody UserLoginVO userLoginVO) {
         return userService.login(userLoginVO.getPhone(), userLoginVO.getPassword());
+    }
+
+    /**
+     * 获取个人简单信息
+     *
+     * @return 信息
+     */
+    @GetMapping("/getSelfSimpleInfo")
+    public Result getSelfSimpleInfo(){
+        return userService.getSelfSimpleInfo();
     }
 }

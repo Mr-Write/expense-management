@@ -40,4 +40,11 @@ public interface UserService extends IService<User> {
      * @return 登录状况
      */
     Result login(String phone, String password);
+
+    /**
+     * 获取个人简单信息
+     *
+     * @return 信息
+     */
+    Result getSelfSimpleInfo();
 }

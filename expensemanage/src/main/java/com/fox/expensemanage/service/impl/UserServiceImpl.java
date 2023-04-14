@@ -2,13 +2,13 @@ package com.fox.expensemanage.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.system.UserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fox.expensemanage.constant.BasicConstants;
 import com.fox.expensemanage.constant.HttpStatus;
 import com.fox.expensemanage.constant.RedisConstants;
 import com.fox.expensemanage.dao.UserMapper;
+import com.fox.expensemanage.dto.UserSimpleInfoDTO;
 import com.fox.expensemanage.entity.RedisUser;
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.po.User;
@@ -179,7 +179,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             count++;
             // 5.从数据库中查询该手机号的用户信息
-            User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getPhone,phone));
+            User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getPhone, phone));
             // 6.用户信息不存在则返回错误
             if (user == null) {
                 return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
@@ -226,6 +226,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
 
+    }
+
+    @Override
+    public Result getSelfSimpleInfo() {
+        RedisUser redisUser = UserHolderUtils.getRedisUser();
+        return Result.ok(new UserSimpleInfoDTO(redisUser.getName(), redisUser.getIcon()));
     }
 
     /**

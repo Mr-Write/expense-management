@@ -24,7 +24,7 @@ public class UserHolderUtils {
      *
      * @return 用户名
      */
-    public static String getUserName() {
+    public static String getNickName() {
         return ((RedisUser) ((SecurityContextHolder.getContext().getAuthentication())
                 .getPrincipal()))
                 .getName();
