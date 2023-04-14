@@ -1,5 +1,6 @@
 package com.fox.expensemanage.service;
 
+import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
+    /**
+     * 发送用于注册的验证码
+     *
+     * @param phone 手机号
+     * @return 发送情况
+     */
+    Result sendUserRegisterCode(String phone);
 }

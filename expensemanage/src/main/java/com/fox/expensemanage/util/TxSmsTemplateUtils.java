@@ -31,14 +31,9 @@ public class TxSmsTemplateUtils {
      */
     private String signContent;
     /**
-     * 登录&注册短信模板的id
+     * 注册短信模板的id
      */
-    private int loginTemplateId;
-
-    /**
-     * 注销模板的id
-     */
-    private int logoffTemplateId;
+    private int registerTemplateId;
 
     /**
      * 发送登录&注册验证码
@@ -47,39 +42,14 @@ public class TxSmsTemplateUtils {
      * @param code  验证码
      * @return 是否成功
      */
-    public boolean sendLoginCode(String phone, String code) {
-        SmsSingleSenderResult result = null;
+    public boolean sendRegisterCode(String phone, String code) {
         try {
             // 短信的模板参数
             String[] params = {code, Integer.toString(SmsConstants.LOGIN_EFFECTIVE_TIME)};
             // 构建短信发送器
             SmsSingleSender sender = new SmsSingleSender(appId, appKey);
             // 发送短信
-            sender.sendWithParam(SmsConstants.CHINA_NATION_CODE, phone, loginTemplateId, params, signContent
-                    , "", "");
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 发送用户注销验证码
-     *
-     * @param phone 手机号
-     * @param code  验证码
-     * @return 是否成功
-     */
-    public boolean sendLogoffCode(String phone, String code) {
-        SmsSingleSenderResult result = null;
-        try {
-            // 短信的模板参数
-            String[] params = {code, Integer.toString(SmsConstants.LOGOFF_EFFECTIVE_TIME)};
-            // 构建短信发送器
-            SmsSingleSender sender = new SmsSingleSender(appId, appKey);
-            // 发送短信
-            sender.sendWithParam(SmsConstants.CHINA_NATION_CODE, phone, logoffTemplateId, params, signContent
+            sender.sendWithParam(SmsConstants.CHINA_NATION_CODE, phone, registerTemplateId, params, signContent
                     , "", "");
         } catch (Exception e) {
             return false;

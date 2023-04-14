@@ -2,6 +2,17 @@ server:
   port: 15959
   max-http-header-size: 2MB
 spring:
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 5MB
+  cloud:
+    alicloud:
+      access-key: LTAI5tKcWoeuxTK8ibWoqW2J
+      secret-key: TQXiDtEnaR8Y7tXetvYZ0t0LXMC6jR
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        bucket: expense-management
   datasource:
     username: root
     password: root
@@ -61,8 +72,8 @@ sms:
   appKey: cbd511ed24bd832d05af54f63c84e52d
   # 签名的内容
   signContent: 狐狸半面添公众号
-  # 登录&注册短信模板的id
-  loginTemplateId: 1671035
+  # 注册短信模板的id
+  registerTemplateId: 1671035
 
 
 

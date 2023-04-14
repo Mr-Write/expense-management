@@ -14,7 +14,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  */
 @SpringBootApplication
 @EnableAspectJAutoProxy(exposeProxy = true)
-//@ComponentScan(basePackages = {"com.xxx.xxx.dao"})
 public class ExpenseManageApplication {
     public static void main(String[] args) {
         SpringApplication.run(ExpenseManageApplication.class, args);
