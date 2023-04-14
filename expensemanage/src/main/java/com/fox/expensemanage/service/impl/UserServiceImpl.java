@@ -234,6 +234,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return Result.ok(new UserSimpleInfoDTO(redisUser.getName(), redisUser.getIcon()));
     }
 
+    @Override
+    public Result modifyUserInfo(String nickName, String icon) {
+        // 1.获取缓存信息
+        RedisUser redisUser = UserHolderUtils.getRedisUser();
+        User user = new User();
+        // 2.判断是否有要修改的信息
+        if (nickName != null && icon != null) {
+            return Result.ok();
+        }
+
+        // 3.对需要修改的信息进行处理
+        if (nickName != null) {
+            user.setNickName(nickName);
+            redisUser.setName(nickName);
+        }
+        if (icon != null) {
+            user.setIcon(icon);
+            redisUser.setIcon(icon);
+        }
+
+        // 4.修改数据库信息
+        userMapper.updateById(user);
+        // 5.修改缓存信息
+        redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
+
+        // 6.返回ok
+        return Result.ok();
+    }
+
     /**
      * 设置用户信息，缓存到 redis 中
      *

@@ -25,8 +25,8 @@ public interface UserService extends IService<User> {
     /**
      * 用户注册
      *
-     * @param phone 手机号
-     * @param code 验证码
+     * @param phone    手机号
+     * @param code     验证码
      * @param password 密码
      * @return 注销状况
      */
@@ -35,7 +35,7 @@ public interface UserService extends IService<User> {
     /**
      * 用户登录
      *
-     * @param phone 手机号
+     * @param phone    手机号
      * @param password 密码
      * @return 登录状况
      */
@@ -47,4 +47,13 @@ public interface UserService extends IService<User> {
      * @return 信息
      */
     Result getSelfSimpleInfo();
+
+    /**
+     * 修改用户信息
+     *
+     * @param nickName 昵称
+     * @param icon     头像
+     * @return 修改状况
+     */
+    Result modifyUserInfo(String nickName, String icon);
 }

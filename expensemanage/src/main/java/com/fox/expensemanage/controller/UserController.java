@@ -3,6 +3,7 @@ package com.fox.expensemanage.controller;
 
 import com.fox.expensemanage.entity.Result;
 import com.fox.expensemanage.service.UserService;
+import com.fox.expensemanage.vo.UserInfoUpdateVO;
 import com.fox.expensemanage.vo.UserLoginVO;
 import com.fox.expensemanage.vo.UserRegisterVO;
 import org.springframework.validation.annotation.Validated;
@@ -55,5 +56,16 @@ public class UserController {
     @GetMapping("/getSelfSimpleInfo")
     public Result getSelfSimpleInfo(){
         return userService.getSelfSimpleInfo();
+    }
+
+    /**
+     * 修改用户信息
+     *
+     * @param userInfoUpdateVO 昵称 + 头像
+     * @return 修改状况
+     */
+    @PutMapping("/modifyUserInfo")
+    public Result modifyUserInfo(@Validated @RequestBody UserInfoUpdateVO userInfoUpdateVO){
+        return userService.modifyUserInfo(userInfoUpdateVO.getNickName(),userInfoUpdateVO.getIcon());
     }
 }

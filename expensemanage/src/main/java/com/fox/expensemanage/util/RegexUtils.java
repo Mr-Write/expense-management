@@ -50,7 +50,7 @@ public class RegexUtils {
         /**
          * 姓名正则，2-24个字，只允许字母、数字、汉字
          */
-        public static final String NAME_REGEX = "^[\\u4E00-\\u9FA5A-Za-z0-9]{2,24}$";
+        public static final String NAME_REGEX = "^[\\u4E00-\\u9FA5A-Za-z0-9]{2,16}$";
 
         /**
          * 个性签名正则，0-64个字符，不允许\n
