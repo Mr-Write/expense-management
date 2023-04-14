@@ -73,7 +73,7 @@ sms:
   # 签名的内容
   signContent: 狐狸半面添公众号
   # 注册短信模板的id
-  loginTemplateId: 1671035
+  registerTemplateId: 1671035
 
 
 
