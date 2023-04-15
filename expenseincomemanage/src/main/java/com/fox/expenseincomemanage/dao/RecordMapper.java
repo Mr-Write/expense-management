@@ -1,7 +1,7 @@
 package com.fox.expenseincomemanage.dao;
 
-import com.fox.expenseincomemanage.po.Record;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fox.expenseincomemanage.po.Record;
 
 /**
  * <p>
