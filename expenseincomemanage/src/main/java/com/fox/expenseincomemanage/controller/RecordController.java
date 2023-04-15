@@ -70,11 +70,28 @@ public class RecordController {
      * @return 记录信息列表
      */
     @GetMapping("/get")
-    public Result modify(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startTime", required = false) LocalDate startTime,
-                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endTime", required = false) LocalDate endTime,
-                         @RequestParam(value = "minMoney", required = false) Integer minMoney,
-                         @RequestParam(value = "maxMoney", required = false) Integer maxMoney,
-                         @RequestParam(value = "type") Integer type) {
+    public Result get(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startTime", required = false) LocalDate startTime,
+                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endTime", required = false) LocalDate endTime,
+                      @RequestParam(value = "minMoney", required = false) Integer minMoney,
+                      @RequestParam(value = "maxMoney", required = false) Integer maxMoney,
+                      @RequestParam(value = "type") Integer type) {
         return recordService.getRecord(startTime, endTime, minMoney, maxMoney, type);
+    }
+
+    /**
+     * 查询收入支出比例
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param minMoney  最小金额
+     * @param maxMoney  最大金额
+     * @return 比例
+     */
+    @GetMapping("/getProportion")
+    public Result getProportion(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startTime", required = false) LocalDate startTime,
+                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endTime", required = false) LocalDate endTime,
+                                @RequestParam(value = "minMoney", required = false) Integer minMoney,
+                                @RequestParam(value = "maxMoney", required = false) Integer maxMoney) {
+        return recordService.getProportion(startTime, endTime, minMoney, maxMoney);
     }
 }

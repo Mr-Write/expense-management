@@ -53,4 +53,15 @@ public interface RecordService extends IService<Record> {
      * @return 记录信息列表
      */
     Result getRecord(LocalDate startTime, LocalDate endTime, Integer minMoney, Integer maxMoney, Integer type);
+
+    /**
+     * 查询收入支出比例
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param minMoney  最小金额
+     * @param maxMoney  最大金额
+     * @return 比例
+     */
+    Result getProportion(LocalDate startTime, LocalDate endTime, Integer minMoney, Integer maxMoney);
 }

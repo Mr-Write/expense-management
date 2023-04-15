@@ -2,4 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fox.expenseincomemanage.dao.RecordMapper">
 
+    <select id="selectProportion" resultType="com.fox.expenseincomemanage.query.RecordProportion">
+        SELECT `type`, SUM(`money`) AS `allMoney`
+        FROM `record`
+        WHERE `user_id` = #{userId}
+        <if test="startTime != null">
+            AND `time` &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND `time` &lt;= #{endTime}
+        </if>
+        <if test="minMoney != null">
+            AND `money` &gt;= #{minMoney}
+        </if>
+        <if test="maxMoney != null">
+            AND `money` &lt;= #{maxMoney}
+        </if>
+        GROUP BY `type`
+    </select>
 </mapper>

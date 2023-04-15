@@ -8,6 +8,7 @@ import com.fox.expenseincomemanage.constant.HttpStatus;
 import com.fox.expenseincomemanage.dao.RecordMapper;
 import com.fox.expenseincomemanage.entity.Result;
 import com.fox.expenseincomemanage.po.Record;
+import com.fox.expenseincomemanage.query.RecordProportion;
 import com.fox.expenseincomemanage.service.RecordService;
 import com.fox.expenseincomemanage.util.UserHolderUtils;
 import com.fox.expenseincomemanage.vo.RecordModifyVO;
@@ -91,5 +92,15 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
                 .orderByDesc(Record::getTime));
 
         return Result.ok(recordList);
+    }
+
+    @Override
+    public Result getProportion(LocalDate startTime, LocalDate endTime, Integer minMoney, Integer maxMoney) {
+        List<RecordProportion> list = recordMapper.selectProportion(startTime, endTime, minMoney, maxMoney,UserHolderUtils.getUserId());
+        if (list==null||list.size()==0){
+            list.add(new RecordProportion(0,0));
+            list.add(new RecordProportion(1,0));
+        }
+        return Result.ok(list);
     }
 }
