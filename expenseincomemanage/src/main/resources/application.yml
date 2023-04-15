@@ -16,7 +16,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://8.130.97.145:3306/expense_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://8.130.97.145:3306/expense_income_manage?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 指定数据源
     type: com.alibaba.druid.pool.DruidDataSource
