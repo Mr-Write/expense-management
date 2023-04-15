@@ -15,6 +15,8 @@ import com.fox.expenseincomemanage.vo.RecordSaveVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -66,10 +68,28 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
                 .set(recordModifyVO.getMoney() != null, Record::getMoney, recordModifyVO.getMoney())
                 .set(recordModifyVO.getEvent() != null, Record::getEvent, recordModifyVO.getEvent()));
 
-        if (updateCount==0){
+        if (updateCount == 0) {
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "记录不存在或权限不足");
         }
 
         return Result.ok();
+    }
+
+    @Override
+    public Result getRecord(LocalDate startTime, LocalDate endTime, Integer minMoney, Integer maxMoney, Integer type) {
+        if (type == null || type < 0 || type > 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "记录类型格式错误");
+        }
+
+        List<Record> recordList = recordMapper.selectList(new LambdaQueryWrapper<Record>()
+                .eq(Record::getUserId, UserHolderUtils.getUserId())
+                .eq(Record::getType, type)
+                .ge(startTime != null, Record::getTime, startTime)
+                .le(endTime != null, Record::getTime, endTime)
+                .ge(minMoney != null, Record::getMoney, minMoney)
+                .le(maxMoney != null, Record::getMoney, maxMoney)
+                .orderByDesc(Record::getTime));
+
+        return Result.ok(recordList);
     }
 }

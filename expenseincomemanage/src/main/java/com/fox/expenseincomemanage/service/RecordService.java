@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fox.expenseincomemanage.vo.RecordModifyVO;
 import com.fox.expenseincomemanage.vo.RecordSaveVO;
 
+import java.time.LocalDate;
+
 /**
  * <p>
  * 支出收入记录表 服务类
@@ -39,4 +41,16 @@ public interface RecordService extends IService<Record> {
      * @return 修改状况
      */
     Result modifyRecord(RecordModifyVO recordModifyVO);
+
+    /**
+     * 查询记录
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param minMoney  最小金额
+     * @param maxMoney  最大金额
+     * @param type      类型：0-支出，1-收入
+     * @return 记录信息列表
+     */
+    Result getRecord(LocalDate startTime, LocalDate endTime, Integer minMoney, Integer maxMoney, Integer type);
 }
