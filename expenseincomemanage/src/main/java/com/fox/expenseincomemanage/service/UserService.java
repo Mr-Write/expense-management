@@ -65,4 +65,11 @@ public interface UserService extends IService<User> {
      * @return 修改状况
      */
     Result modifyPwd(String password, String code);
+
+    /**
+     * 用户退出登录
+     *
+     * @return 退出状况
+     */
+    Result logout();
 }

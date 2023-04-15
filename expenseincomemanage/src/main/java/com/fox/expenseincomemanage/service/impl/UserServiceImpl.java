@@ -289,6 +289,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return Result.ok();
     }
 
+    @Override
+    public Result logout() {
+        redisCacheUtils.deleteObject(RedisConstants.LOGIN_USER_INFO_KEY + UserHolderUtils.getUserId());
+        return Result.ok();
+    }
+
     /**
      * 设置用户信息，缓存到 redis 中
      *

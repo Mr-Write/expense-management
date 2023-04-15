@@ -3,6 +3,7 @@ package com.fox.expenseincomemanage.controller;
 
 import com.fox.expenseincomemanage.entity.Result;
 import com.fox.expenseincomemanage.service.UserService;
+import com.fox.expenseincomemanage.util.UserHolderUtils;
 import com.fox.expenseincomemanage.vo.UserInfoUpdateVO;
 import com.fox.expenseincomemanage.vo.UserLoginVO;
 import com.fox.expenseincomemanage.vo.UserRegisterVO;
@@ -79,5 +80,15 @@ public class UserController {
     @PutMapping("/modifyPwd")
     public Result modifyPwd(@RequestBody UserUpdatePwdVO userUpdatePwdVO) {
         return userService.modifyPwd(userUpdatePwdVO.getPassword(), userUpdatePwdVO.getCode());
+    }
+
+    /**
+     * 用户退出登录
+     *
+     * @return 退出状况
+     */
+    @PostMapping("/logout")
+    public Result logout(){
+        return userService.logout();
     }
 }
