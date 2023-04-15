@@ -1,7 +1,9 @@
 package com.fox.expenseincomemanage.service;
 
+import com.fox.expenseincomemanage.entity.Result;
 import com.fox.expenseincomemanage.po.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fox.expenseincomemanage.vo.RecordSaveVO;
 
 /**
  * <p>
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RecordService extends IService<Record> {
 
+    /**
+     * 添加收入或支出记录
+     *
+     * @param recordSaveVO 金额 + 时间 + 事件 + 类型
+     * @return 记录id
+     */
+    Result saveRecord(RecordSaveVO recordSaveVO);
 }

@@ -1,7 +1,16 @@
 package com.fox.expenseincomemanage.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -12,6 +21,9 @@ import java.time.LocalDateTime;
  * @author 狐狸半面添
  * @since 2023-04-15
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Record implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,6 +31,7 @@ public class Record implements Serializable {
     /**
      * 自增id(雪花算法)
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -32,85 +45,29 @@ public class Record implements Serializable {
     private Integer type;
 
     /**
-     * 金额
+     * 金额，单位：分
      */
-    private BigDecimal money;
+    private Integer money;
 
     /**
-     * 事件
+     * 事件，最多128字
      */
     private String event;
 
     /**
+     * 时间
+     */
+    private LocalDate time;
+
+    /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-    public String getEvent() {
-        return event;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Record{" +
-            "id=" + id +
-            ", userId=" + userId +
-            ", type=" + type +
-            ", money=" + money +
-            ", event=" + event +
-            ", createTime=" + createTime +
-            ", updateTime=" + updateTime +
-        "}";
-    }
 }
